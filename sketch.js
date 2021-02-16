@@ -5,10 +5,10 @@
 
 /* ===
 ml5 Example
-Real time Object Detection using objectDetector
+Real time Object Detection using YOLO
 === */
 
-let objectDetector;
+let yolo;
 let status;
 let objects = [];
 let video;
@@ -19,7 +19,7 @@ const height = 360;
 async function make() {
   // get the video
   video = await getVideo();
-  objectDetector = await ml5.objectDetector('yolo', startDetecting)
+  yolo = await ml5.YOLO(video, startDetecting)
   canvas = createCanvas(width, height);
   ctx = canvas.getContext('2d');
 }
@@ -35,7 +35,7 @@ function startDetecting(){
 }
 
 function detect() {
-  objectDetector.detect(video, function(err, results) {
+  yolo.detect(function(err, results) {
     if(err){
       console.log(err);
       return
@@ -56,6 +56,7 @@ function draw(){
   ctx.fillRect(0,0, width, height);
 
   ctx.drawImage(video, 0, 0);
+  console.log('objects', objects);
   for (let i = 0; i < objects.length; i += 1) {
       
     ctx.font = "16px Arial";
