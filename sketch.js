@@ -1,17 +1,12 @@
 let yolo;
-
 let video;
-
 let detectedItems = [];
 
 function setup() {
   createCanvas(800, 600);
   frameRate(30);
-
   video = createCapture(VIDEO);
-  
   yolo = ml5.YOLO(video, modelLoaded);
-
   video.hide();
 }
 
@@ -32,7 +27,6 @@ function draw() {
 function modelLoaded() {
   console.log("The Model Is Ready");
   yolo.detect(video, gotResult);
-  //scanFrame();
 }
 
 function gotResult(err, results){
@@ -40,9 +34,3 @@ function gotResult(err, results){
   yolo.detect(video, gotResult);
 }
 
-/*function scanFrame(){
-  yolo.detect(function(err, results) {
-    detectedItems = results;
-    scanFrame();
-  });
-}*/
