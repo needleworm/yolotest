@@ -1,6 +1,19 @@
+// Copyright (c) 2019 ml5
+//
+// This software is released under the MIT License.
+// https://opensource.org/licenses/MIT
+
+/* ===
+ml5 Example
+Real time Object Detection using YOLO
+=== */
+
 let yolo;
+let status;
+let objects = [];
 let video;
-let detectedItems = [];
+const width = 480;
+const height = 360;
 
 function setup() {
   createCanvas(400, 300);
@@ -12,15 +25,15 @@ function setup() {
 
 function draw() {
   image(video, 0, 0, width, height);
-  for (let i = 0; i < detectedItems.length; i++) {
+  for (let i = 0; i < objects.length; i++) {
     noStroke();
     fill(255, 255, 0);
     textSize(20);
-    text(detectedItems[i].label + " " + nfc(detectedItems[i].confidence * 100.0, 2) + "%", detectedItems[i].x * width, detectedItems[i].y * height - 5);
+    text(objects[i].label + " " + nfc(objects[i].confidence * 100.0, 2) + "%", objects[i].x * width, objects[i].y * height - 5);
     noFill();
     strokeWeight(4);
     stroke(255, 255, 0);
-    rect(detectedItems[i].x * width, detectedItems[i].y * height, detectedItems[i].w * width, detectedItems[i].h * height);
+    rect(objects[i].x * width, objects[i].y * height, objects[i].w * width, objects[i].h * height);
   }
 }
 
@@ -30,7 +43,7 @@ function modelLoaded() {
 }
 
 function gotResult(err, results){
-  detectedItems = results;
+  objects = results;
   yolo.detect(video, gotResult);
 }
 
