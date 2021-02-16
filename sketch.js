@@ -1,97 +1,48 @@
-// Copyright (c) 2019 ml5
-//
-// This software is released under the MIT License.
-// https://opensource.org/licenses/MIT
-
-/* ===
-ml5 Example
-Real time Object Detection using YOLO
-=== */
-
 let yolo;
-let status;
-let objects = [];
+
 let video;
-let canvas, ctx;
-const width = 1024;
-const height = 768;
 
-async function make() {
-  // get the video
-  video = await getVideo();
-  yolo = await ml5.YOLO(video, startDetecting)
-  canvas = createCanvas(width, height);
-  ctx = canvas.getContext('2d');
+let detectedItems = [];
+
+function setup() {
+  createCanvas(800, 600);
+  frameRate(30);
+
+  video = createCapture(VIDEO);
+  
+  yolo = ml5.YOLO(video, modelLoaded);
+
+  video.hide();
 }
 
-// when the dom is loaded, call make();
-window.addEventListener('DOMContentLoaded', function() {
-  make();
-});
-
-function startDetecting(){
-  console.log('model ready')
-  detect();
-}
-
-function detect() {
-  yolo.detect(function(err, results) {
-    if(err){
-      console.log(err);
-      return
-    }
-    objects = results;
-
-    if(objects){
-      draw();
-    }
-    
-    detect();
-  });
-}
-
-function draw(){
-  // Clear part of the canvas
-  ctx.fillStyle = "#000000"
-  ctx.fillRect(0,0, width, height);
-
-  ctx.drawImage(video, 0, 0);
-  console.log('objects', objects);
-  for (let i = 0; i < objects.length; i += 1) {
-      
-    ctx.font = "16px Arial";
-    ctx.fillStyle = "green";
-    ctx.fillText(objects[i].label, objects[i].x + 4, objects[i].y + 16); 
-
-    ctx.beginPath();
-    ctx.rect(objects[i].x, objects[i].y, objects[i].width, objects[i].height);
-    ctx.strokeStyle = "green";
-    ctx.stroke();
-    ctx.closePath();
+function draw() {
+  image(video, 0, 0, width, height);
+  for (let i = 0; i < detectedItems.length; i++) {
+    noStroke();
+    fill(255, 255, 0);
+    textSize(20);
+    text(detectedItems[i].label + " " + nfc(detectedItems[i].confidence * 100.0, 2) + "%", detectedItems[i].x * width, detectedItems[i].y * height - 5);
+    noFill();
+    strokeWeight(4);
+    stroke(255, 255, 0);
+    rect(detectedItems[i].x * width, detectedItems[i].y * height, detectedItems[i].w * width, detectedItems[i].h * height);
   }
 }
 
-// Helper Functions
-async function getVideo(){
-  // Grab elements, create settings, etc.
-  const videoElement = document.createElement('video');
-  videoElement.setAttribute("style", "display: none;"); 
-  videoElement.width = width;
-  videoElement.height = height;
-  document.body.appendChild(videoElement);
-
-  // Create a webcam capture
-  const capture = await navigator.mediaDevices.getUserMedia({ video: true })
-  videoElement.srcObject = capture;
-  videoElement.play();
-
-  return videoElement
+function modelLoaded() {
+  console.log("The Model Is Ready");
+  yolo.detect(video, gotResult);
+  //scanFrame();
 }
 
-function createCanvas(w, h){
-  const canvas = document.createElement("canvas"); 
-  canvas.width  = w;
-  canvas.height = h;
-  document.body.appendChild(canvas);
-  return canvas;
+function gotResult(err, results){
+  detectedItems = results;
+  yolo.detect(video, gotResult);
 }
+
+/*function scanFrame(){
+  yolo.detect(function(err, results) {
+    detectedItems = results;
+    scanFrame();
+  });
+}*/
