@@ -12,13 +12,21 @@ let yolo;
 let status;
 let objects = [];
 let video;
+let canvas, ctx;
 const width = 480;
 const height = 360;
 
 function setup() {
   createCanvas(width, height);
   frameRate(20);
-  video = createCapture(VIDEO);
+  video =  createCapture({
+    audio: false,
+    video: {
+      facingMode: {
+        exact: "environment"
+      }
+    }
+  });
   yolo = ml5.YOLO(video, modelLoaded);
   video.hide();
 }
