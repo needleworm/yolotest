@@ -13,8 +13,8 @@ let status;
 let objects = [];
 let video;
 let canvas, ctx;
-const width = 320;
-const height = 480;
+const width = 480;
+const height = 720;
 
 function setup() {
   createCanvas(width, height);
