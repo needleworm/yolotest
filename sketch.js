@@ -5,18 +5,7 @@ let detectedItems = [];
 function setup() {
   createCanvas(400, 300);
   frameRate(20);
-  var constraints = {
-    audio: false,
-    video: {
-      facingMode: {
-        exact: "environment"
-      }
-    }    
-    //video: {
-      //facingMode: "user"
-    //} 
-  };
-  video = createCapture(constraints);
+  video = createCapture(VIDEO);
   yolo = ml5.YOLO(video, modelLoaded);
   video.hide();
 }
