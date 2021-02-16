@@ -16,7 +16,7 @@ const width = 480;
 const height = 360;
 
 function setup() {
-  createCanvas(400, 300);
+  createCanvas(width, height);
   frameRate(20);
   video = createCapture(VIDEO);
   yolo = ml5.YOLO(video, modelLoaded);
